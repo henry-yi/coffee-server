@@ -21,7 +21,8 @@ const Order = sequelize.define('work_orders', {
     },    
     id: {
       type: Sequelize.INTEGER,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
     },
     coffee: {
       type: Sequelize.STRING
@@ -46,6 +47,9 @@ const Order = sequelize.define('work_orders', {
     }    
 });
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -54,5 +58,18 @@ app.use(function(req, res, next) {
 
 app.get('/', (req, res) => res.send('Hello World!'))
 app.get('/orders', async (req, res) => res.send(await Order.findAll({ order: [['ship_date', 'ASC']] })));
+app.post('/new', async (req, res) => res.send(await Order.create({
+  coffee: req.body.coffee,
+  brew_method: req.body.brew_method,
+  number_of_cases: req.body.number_of_cases,
+  packets_per_case: req.body.packets_per_case,
+  ship_date: req.body.ship_date,
+  priority: req.body.priority,
+  order_number: 57120  
+})));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+ 
+async function test(req) {
+
+}
